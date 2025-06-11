@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.cdnfonts.com/css/coolvetica" rel="stylesheet">
   <title>SAMEDISAUCISSE</title>
-
   <style>
     body {
       margin: 0;
@@ -19,6 +18,7 @@
       color: white;
       text-align: center;
       padding: 2rem;
+      position: relative;
     }
 
     header h1 {
@@ -47,10 +47,84 @@
       }
     }
 
-    main {
-      max-width: 1200px;
-      margin: auto;
-      position: relative;
+    .dice-button {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      z-index: 1000;
+      text-align: center;
+    }
+
+    .popup.show {
+      display: block;
+    }
+
+    .popup button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .dice-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .die {
+      width: 60px;
+      height: 60px;
+      background: #eee;
+      border: 2px solid #999;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s;
+    }
+
+    .shake {
+      animation: shake 0.5s;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: #333;
+      border-radius: 50%;
+    }
+
+    .dot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      width: 100%;
+      height: 100%;
+      gap: 4px;
+      padding: 8px;
+      box-sizing: border-box;
     }
 
     iframe {
@@ -72,7 +146,8 @@
 <body>
 
   <header>
-    <h1>SAMEDISAUCISSE</h1>
+    <button class="dice-button" onclick="togglePopup()">🎲</button>
+    <h1>SAMEDISUICIDE</h1>
     <p>Circuit de Barathon Rennais</p>
   </header>
 
@@ -83,6 +158,53 @@
   <footer>
     © 2025. Tous droits réservés.
   </footer>
+
+  <div class="popup" id="dicePopup">
+    <h2>Lancer les dés</h2>
+    <button onclick="rollDice()">Lancer 🎲</button>
+    <div class="dice-container">
+      <div class="die" id="die1"></div>
+      <div class="die" id="die2"></div>
+    </div>
+    <button onclick="togglePopup()">Fermer</button>
+  </div>
+
+  <script>
+    function togglePopup() {
+      document.getElementById('dicePopup').classList.toggle('show');
+    }
+
+    function rollDice() {
+      const die1 = document.getElementById('die1');
+      const die2 = document.getElementById('die2');
+
+      die1.classList.add('shake');
+      die2.classList.add('shake');
+
+      setTimeout(() => {
+        die1.classList.remove('shake');
+        die2.classList.remove('shake');
+
+        renderDieFace(die1, Math.floor(Math.random() * 6) + 1);
+        renderDieFace(die2, Math.floor(Math.random() * 6) + 1);
+      }, 500);
+    }
+
+    function renderDieFace(dieElement, value) {
+      const positions = [
+        [4],
+        [0, 8],
+        [0, 4, 8],
+        [0, 2, 6, 8],
+        [0, 2, 4, 6, 8],
+        [0, 1, 2, 6, 7, 8]
+      ];
+
+      dieElement.innerHTML = '<div class="dot-grid">' + Array.from({ length: 9 }, (_, i) =>
+        positions[value - 1].includes(i) ? '<div class="dot"></div>' : '<div></div>'
+      ).join('') + '</div>';
+    }
+  </script>
 
 </body>
 </html>
